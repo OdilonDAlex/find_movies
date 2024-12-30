@@ -1,20 +1,17 @@
-import { StyleSheet, Text, Image } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Header from "@/components/header";
+import { color } from "@/constants/Colors";
+import { Image, SafeAreaView, StyleSheet, Text } from "react-native";
 import NavBar from "@/components/navbar";
 import NavButton from "@/components/navbutton";
-import { color } from "@/constants/Colors";
-import Header from "@/components/header";
-import SearchBar from "@/components/searchBar";
-import CustomText from "@/components/text";
 
-
-export default function Index() {
+export default function WatchList() {
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: color.primaryBG}]}>
-
-      <CustomText style={{marginVertical: 20}} variant="home_text_header">What do you want to watch ?</CustomText>
-
-        <SearchBar/>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: color.primaryBG }]}
+    >
+      <Header title="Watch list">
+        <Image source={require("@/assets/images/watchlist.png")}></Image>
+      </Header>
 
       <NavBar
         style={{
@@ -42,10 +39,9 @@ export default function Index() {
   );
 }
 
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingHorizontal: 30
-    },
-})
+  container: {
+    flex: 1,
+    paddingHorizontal: 30,
+  },
+});

@@ -5,16 +5,21 @@ import NavButton from "@/components/navbutton";
 import { color } from "@/constants/Colors";
 import Header from "@/components/header";
 import SearchBar from "@/components/searchBar";
-import CustomText from "@/components/text";
 
-
-export default function Index() {
+export default function Search() {
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: color.primaryBG}]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: color.primaryBG }]}
+    >
+      <Header title="Search" style={{ marginBottom: 10 }}>
+        <Image
+          source={require("@/assets/images/info.png")}
+          width={36}
+          height={36}
+        ></Image>
+      </Header>
 
-      <CustomText style={{marginVertical: 20}} variant="home_text_header">What do you want to watch ?</CustomText>
-
-        <SearchBar/>
+      <SearchBar />
 
       <NavBar
         style={{
@@ -42,10 +47,9 @@ export default function Index() {
   );
 }
 
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingHorizontal: 30
-    },
-})
+  container: {
+    flex: 1,
+    paddingHorizontal: 30,
+  },
+});

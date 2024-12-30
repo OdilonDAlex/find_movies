@@ -4,6 +4,7 @@ type Color = {
     navText: string,
     title: string,
     secondaryBG: string,
+    active: string,
     [key: string]: string,
 }
 
@@ -12,5 +13,6 @@ export const color: Color = {
     borderColor: '#0296E5',
     navText: '#67686D',
     title:  '#ECECEC',
-    secondaryBG: '#3A3F47'
+    secondaryBG: '#3A3F47',
+    active: '#0296E5'
 }

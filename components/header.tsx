@@ -25,9 +25,13 @@ export default function Header({ children, title, style, ...rest }: Props) {
           alignItems: "center",
           justifyContent: "center",
         }}
-        onPress={() => {
-          router.back();
-        }}
+        onPress={
+          router.canGoBack()
+            ? () => {
+                router.back();
+              }
+            : null
+        }
       >
         <Image
           source={require("@/assets/images/arrow-left.png")}

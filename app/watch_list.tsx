@@ -30,9 +30,10 @@ export default function WatchList() {
           link={"/search"}
         />
         <NavButton
-          source={require("@/assets/images/watchlist.png")}
+          source={require("@/assets/images/watchlist_active.png")}
           text="Watch List"
           link={"/watch_list"}
+          active
         />
       </NavBar>
     </SafeAreaView>

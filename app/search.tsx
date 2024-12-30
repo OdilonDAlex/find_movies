@@ -33,9 +33,10 @@ export default function Search() {
           link={"/"}
         />
         <NavButton
-          source={require("@/assets/images/search.png")}
+          source={require("@/assets/images/search_active.png")}
           text="Search"
           link={"/search"}
+          active
         />
         <NavButton
           source={require("@/assets/images/watchlist.png")}

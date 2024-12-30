@@ -23,9 +23,10 @@ export default function Index() {
         }}
       >
         <NavButton
-          source={require("@/assets/images/home.png")}
+          source={require("@/assets/images/home_active.png")}
           text="Home"
           link={"/"}
+          active
         />
         <NavButton
           source={require("@/assets/images/search.png")}

@@ -1,4 +1,5 @@
 import { color } from "@/constants/Colors";
+import { useState } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -7,16 +8,32 @@ import {
   View,
   Image,
 } from "react-native";
+import { router, Router } from "expo-router";
 
-export default function SearchBar() {
+type Props = {
+    placeholder?: string
+}
+
+export default function SearchBar({placeholder, ...rest}: Props) {
+  const [query, setQuery]: [string, (query: string) => void] = useState("");
+  const updateQuery: (text: string) => void = (text: string) => {
+    setQuery(text)
+  }
   return (
     <View style={[styles.input, { backgroundColor: color.secondaryBG }]}>
+    
       <TextInput
         style={styles.input_control}
         placeholder="search"
         placeholderTextColor={color.navText}
-      ></TextInput>
-      <Pressable>
+        onChangeText={updateQuery}
+      >{placeholder ? placeholder : ""}</TextInput>
+      <Pressable onPress={() => {
+        router.push({
+            pathname: '/search',
+            params: {query: query}
+        })
+      }}>
         <Image
           height={36}
           width={36}
@@ -44,5 +61,6 @@ const styles = StyleSheet.create({
     width: "auto",
     backgroundColor: "transparent",
     flexGrow: 1,
+    color: "white",
   },
 });

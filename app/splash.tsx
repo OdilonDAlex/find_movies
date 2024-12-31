@@ -10,7 +10,7 @@ type Nav = {
   text: string;
 };
 
-export default function Spash() {
+export default function SplashScreen() {
   const navs = [
     {
       iconName: "home",
@@ -34,8 +34,6 @@ export default function Spash() {
       ]}
     >
       <Image source={require("@/assets/images/popcorn.png")}></Image>
-
-      <Link href={'/search'}>Search</Link>
     
     </SafeAreaView>
   );

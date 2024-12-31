@@ -9,7 +9,7 @@ import CustomText from "@/components/text";
 import { useLocalSearchParams } from "expo-router";
 
 export default function Search() {
-  const { query } = useLocalSearchParams()
+  const { query } = useLocalSearchParams();
   const movies: any[] = [];
   return (
     <SafeAreaView
@@ -23,9 +23,9 @@ export default function Search() {
         ></Image>
       </Header>
 
-      <SearchBar placeholder={query?.toString() ? query?.toString() : ""}/>
+      <SearchBar placeholder={query?.toString() ? query?.toString() : ""} />
 
-      {((query !== undefined) && movies.length === 0) ? (
+      {query !== undefined && movies.length === 0 ? (
         <View style={styles.body}>
           <Image
             width={76}
@@ -39,12 +39,13 @@ export default function Search() {
             Find your movie by type title, category, years, etc
           </CustomText>
         </View>
-      ) : 
-      (
-      <View style={styles.body}>
-        <CustomText variant="menu">What is the name of the movie that you looking for ?</CustomText>
-      </View>
-        )  }
+      ) : (
+        <View style={styles.body}>
+          <CustomText variant="menu">
+            What is the name of the movie that you looking for ?
+          </CustomText>
+        </View>
+      )}
 
       <NavBar
         style={{
@@ -76,7 +77,7 @@ export default function Search() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
   },
 
   body: {

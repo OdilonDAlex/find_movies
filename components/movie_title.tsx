@@ -25,7 +25,6 @@ export default function MovieTitle({ title, style, ...rest }: Props) {
                     left: x - 105,
                 });
 
-                console.log(Dimensions.get('window').width)
                 setShowPoster(true);
             });
         }, 1000);

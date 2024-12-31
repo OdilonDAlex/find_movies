@@ -1,4 +1,11 @@
-import { StyleSheet, Text, Image, View, FlatList } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    Image,
+    View,
+    FlatList,
+    Pressable,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NavBar from "@/components/navbar";
 import NavButton from "@/components/navbutton";
@@ -6,7 +13,7 @@ import { color } from "@/constants/Colors";
 import Header from "@/components/header";
 import SearchBar from "@/components/searchBar";
 import CustomText from "@/components/text";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import SearchView from "@/components/search_view";
 
 type Movie = {
@@ -27,7 +34,7 @@ export default function Search() {
             category: "Action",
             date: "2019",
             length: "148 Minutes",
-            poster: require('@/assets/images/avengers.png')
+            poster: require("@/assets/images/avengers.png"),
         },
         {
             title: "Sonic",
@@ -35,7 +42,7 @@ export default function Search() {
             category: "Action",
             date: "2021",
             length: "139 Minutes",
-            poster: require('@/assets/images/sonic.png')
+            poster: require("@/assets/images/sonic.png"),
         },
     ];
     return (
@@ -85,9 +92,16 @@ export default function Search() {
                     data={movies}
                     renderItem={({ item }) => {
                         return (
-                            <SearchView
-                                {...item}
-                            />
+                            <Pressable
+                                onPress={() => router.push({
+                                    pathname: '/movie/[id]',
+                                    params: {
+                                        id: item.title
+                                    }
+                                })}
+                                >
+                                <SearchView {...item} />
+                            </Pressable>
                         );
                     }}
                     keyExtractor={(item) => `${item.title}${item.length}`}

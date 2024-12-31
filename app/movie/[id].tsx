@@ -1,7 +1,7 @@
 import Header from "@/components/header";
 import { color } from "@/constants/Colors";
 import { useLocalSearchParams } from "expo-router";
-import { Image, ImageBackground, Text, View } from "react-native";
+import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MovieDetails from "@/components/movie_details";
 import Tab from "@/components/tab";
@@ -40,12 +40,28 @@ export default function Show() {
                 }}
                 tabs={["About Movie", "Reviews", "Cast"]}
             ></Tab>
+
+            <View style={styles.tab}>
+                <Text style={styles.description}>
+                From DC Comics comes the Suicide Squad, an antihero team of incarcerated supervillains who act as deniable assets for the United States government, undertaking high-risk black ops missions in exchange for commuted prison sentences.
+                </Text>
+            </View>
         </SafeAreaView>
     );
 }
 
-const styles = {
+const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-};
+
+    tab: {
+        flex: 1,
+        paddingHorizontal: 30
+    },
+    description: {
+        textAlign: 'justify',
+        fontSize: 12,
+        color: 'white'
+    }
+});

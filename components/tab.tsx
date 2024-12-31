@@ -16,8 +16,6 @@ type Props = ViewProps & {
 
 export default function Tab({ tabs, style,...rest }: Props) {
     const [active, setActive]: [string, (active: string) => void] = useState(tabs[0])
-    
-    console.log(active)
     return (
         <View {...rest} style={[styles.tabs, style]}>
             <ScrollView 

@@ -6,6 +6,7 @@ type Color = {
     secondaryBG: string,
     active: string,
     borderBottom: string,
+    rate: string,
     [key: string]: string,
 }
 
@@ -16,5 +17,6 @@ export const color: Color = {
     title:  '#ECECEC',
     secondaryBG: '#3A3F47',
     active: '#0296E5',
-    borderBottom: '#3A3F47'
+    borderBottom: '#3A3F47',
+    rate: '#FF8700'
 }

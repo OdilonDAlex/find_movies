@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Image, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, Text } from "react-native";
 import NavBar from "@/components/navbar";
 import NavButton from "@/components/navbutton";
 import { Link } from "expo-router";
@@ -34,7 +34,10 @@ export default function SplashScreen() {
       ]}
     >
       <Image source={require("@/assets/images/popcorn.png")}></Image>
-    
+      
+      <ActivityIndicator size={20} style={{
+        marginTop: 40
+      }}/>
     </SafeAreaView>
   );
 }

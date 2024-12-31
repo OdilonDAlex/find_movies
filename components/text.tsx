@@ -8,7 +8,7 @@ import {
     ViewStyle,
 } from "react-native";
 import { color } from "@/constants/Colors";
-import React from "react";
+import React, { LegacyRef } from "react";
 
 type Props = ViewProps & {
     variant: string;
@@ -34,7 +34,7 @@ export default function CustomText({
     let textStyle = getStyle(variant);
     return (
         <Text
-            ref={ref_}
+            ref={ref_ as any}
             {...rest}
             // pour eviter l'erreur de ts
             style={[
@@ -65,4 +65,10 @@ const styles = StyleSheet.create({
         fontWeight: 500,
         color: "white",
     },
+
+    rate: {
+      fontWeight: 600,
+      fontSize: 12,
+      color: color.rate
+    }
 });

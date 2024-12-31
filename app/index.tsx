@@ -111,7 +111,9 @@ export default function Index() {
         <SafeAreaView
             style={[styles.container, { backgroundColor: color.primaryBG }]}
         >
-            <ScrollView>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                >
                 <CustomText
                     style={{ marginVertical: 20 }}
                     variant="home_text_header"
@@ -121,7 +123,7 @@ export default function Index() {
 
                 <SearchBar />
 
-                <Recent></Recent>
+                <Recent/>
 
                 <Tab
                     tabs={["Upcoming", "Popular", "Recent", "Now Playing"]}

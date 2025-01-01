@@ -15,6 +15,7 @@ import MovieDetails from "@/components/movie_details";
 import Tab from "@/components/tab";
 import useFetch from "@/hooks/api_managements";
 import { DEFAULT_GET_OPTIONS, getImage } from "@/constants/API";
+import Actor from "@/components/actor";
 
 const tabNames = ["About Movie", "Reviews", "Cast"];
 
@@ -86,9 +87,13 @@ export default function Show() {
                     ></Tab>
 
                     <View style={styles.tab}>
-                        <Text style={styles.description}>
+                        {currentTab === 'About Movie' ? <Text style={styles.description}>
                             {data?.overview}
-                        </Text>
+                        </Text> :  undefined}
+                        {currentTab === 'Reviews' ? <Text style={styles.description}>
+                            {data?.overview}
+                        </Text> :  undefined}
+                        {currentTab === 'Cast' ? <Actor movie_id={id.toString()}/> :  undefined}
                     </View>
                 </>
             )}

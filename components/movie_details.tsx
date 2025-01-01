@@ -13,8 +13,6 @@ type Props = {
 
 export default function MovieDetails({title, uri, long, date, category, ...rest}: Props) {
     
-    console.log(title, long, category, date)
-    
     return (
         <View {...rest} style={styles.container}>
             <MovieTitle uri={uri}

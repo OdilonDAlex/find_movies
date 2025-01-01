@@ -47,7 +47,7 @@ export default function Search() {
     const [hide, setHide] = useState(false);
     const { data, isFetching } = useFetch(
         `search/movie?query=${query}`,
-        ["search", query.toString()],
+        ["search", query?.toString()],
         DEFAULT_GET_OPTIONS
     );
 

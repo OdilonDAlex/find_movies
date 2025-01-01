@@ -1,110 +1,90 @@
+import { getImage } from "@/constants/API";
 import { color } from "@/constants/Colors";
 import { router } from "expo-router";
 import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Image,
-  ImageBackground,
-  ViewProps,
-  ScrollView,
+    View,
+    Text,
+    StyleSheet,
+    Pressable,
+    Image,
+    ImageBackground,
+    ViewProps,
+    ScrollView,
 } from "react-native";
 
-export default function Recent({children, ...rest}: ViewProps) {
-  return (
-    <View style={styles.container}>
-        {children}
-      <ScrollView
-        showsHorizontalScrollIndicator={false}
-        horizontal={true}
-        >
+type Props = ViewProps & {
+    movies: any[];
+};
 
-      <Pressable
-        style={styles.pressable}
-        onPress={() => router.push({
-          pathname: '/movie/[id]',
-          params: {
-            id: 'Avengers'
-          }
-        })}
+export default function Recent({ children, movies, ...rest }: Props) {
+    return (
+        <View style={styles.container}>
+            {children}
+            <ScrollView
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+            >
 
-      >
-        <ImageBackground
-          style={styles.button}
-          width={144}
-          height={210}
-          source={require("@/assets/images/image1.png")}
-        ></ImageBackground>
+                {movies.map((movie) => (
+                    <View key={movie.id}>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={() => router.push({
+                              pathname: '/movie/[id]',
+                              params: {
+                                id: movie.id
+                              }
+                            })}
+                        >
+                            <ImageBackground
+                                style={styles.button}
+                                width={144}
+                                height={210}
+                                source={{
+                                  uri: getImage(movie.poster)
+                                }}
+                            ></ImageBackground>
+                        </Pressable>
 
-        <Text style={styles.number}>1</Text>
-      </Pressable>
-
-      <Pressable
-        style={styles.pressable}
-        onPress={() => console.log("Hello, world")}
-      >
-        <ImageBackground
-          style={styles.button}
-          width={144}
-          height={210}
-          source={require("@/assets/images/avengers.png")}
-        ></ImageBackground>
-
-        <Text style={styles.number}>2</Text>
-      </Pressable>
-
-      <Pressable
-        style={styles.pressable}
-        onPress={() => console.log("Hello, world")}
-      >
-        <ImageBackground
-          style={styles.button}
-          width={144}
-          height={210}
-          source={require("@/assets/images/sonic.png")}
-        ></ImageBackground>
-
-        <Text style={styles.number}>3</Text>
-      </Pressable>
-
-      </ScrollView>
-    </View>
-  );
+                    </View>
+                ))}
+            </ScrollView>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    gap: 20,
-    flexWrap: "wrap",
-    marginVertical: 20,
-    maxHeight: 210,
-    justifyContent: "center",
-    alignItems: "center",
-    overflowX: "scroll",
-  },
+    container: {
+        flex: 1,
+        gap: 20,
+        flexWrap: "wrap",
+        marginVertical: 20,
+        maxHeight: 210,
+        justifyContent: "center",
+        alignItems: "center",
+        overflowX: "scroll",
+    },
 
-  button: {
-    width: 144,
-    height: 210,
-  },
+    button: {
+        width: 144,
+        height: 210,
+    },
 
-  pressable: {
-    position: "relative",
-    width: 144,
-    height: 210,
-    marginHorizontal: 10,
-    borderRadius: 20,
-    overflow: 'hidden'
-  },
+    pressable: {
+        position: "relative",
+        width: 144,
+        height: 210,
+        marginHorizontal: 10,
+        borderRadius: 20,
+        overflow: "hidden",
+    },
 
-  number: {
-    position: 'absolute',
-    fontSize: 72,
-    color: color.borderColor,
-    opacity: .4,
-    left: -10,
-    bottom: -30
-  },
+    number: {
+        position: "absolute",
+        fontSize: 72,
+        color: color.borderColor,
+        opacity: 0.4,
+        left: -10,
+        bottom: -30,
+    },
 });

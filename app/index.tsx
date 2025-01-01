@@ -64,7 +64,7 @@ export default function Index() {
             // description: movie.overview,
             // date: movie.realise_date,
         };
-    }).splice(0, count - (count % 3))
+    })
 
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined;
@@ -109,7 +109,9 @@ export default function Index() {
 
                 <SearchBar />
 
-                <Recent />
+                {isFetching ? <ActivityIndicator/> :  <Recent 
+                    movies={movies.slice(0, 3)}
+                    />}
 
                 <Tab
                     currentTab={currentTab}
@@ -126,7 +128,7 @@ export default function Index() {
                             alignItems: "center",
                             justifyContent: "center",
                         }}
-                        data={movies}
+                        data={movies.slice(3, count - (count % 3))}
                         renderItem={({ item }) => {
                             return (
                                 <Pressable

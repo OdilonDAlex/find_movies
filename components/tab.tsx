@@ -11,11 +11,12 @@ import { color } from "@/constants/Colors";
 import { useState } from "react";
 
 type Props = ViewProps & {
-    tabs: string[]
+    tabs: string[],
+    currentTab: string,
+    changeCurrentTab: (currentTab: string) => void
 };
 
-export default function Tab({ tabs, style,...rest }: Props) {
-    const [active, setActive]: [string, (active: string) => void] = useState(tabs[0])
+export default function Tab({currentTab, changeCurrentTab, tabs, style,...rest }: Props) {
     return (
         <View {...rest} style={[styles.tabs, style]}>
             <ScrollView 
@@ -27,7 +28,7 @@ export default function Tab({ tabs, style,...rest }: Props) {
                         <Pressable
                             key={tab}
                             style={
-                                [tab === active
+                                [tab === currentTab
                                     ? {
                                           borderBottomColor: color.borderBottom,
                                           borderBottomWidth: 4,
@@ -40,7 +41,7 @@ export default function Tab({ tabs, style,...rest }: Props) {
                             }
                         
                         onPress={() => {
-                            setActive(tab)
+                            changeCurrentTab(tab)
                         }}
                         >
                             <CustomText variant="title">{tab}</CustomText>

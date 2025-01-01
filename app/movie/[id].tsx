@@ -1,13 +1,41 @@
 import Header from "@/components/header";
 import { color } from "@/constants/Colors";
 import { useLocalSearchParams } from "expo-router";
-import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+    ActivityIndicator,
+    Image,
+    ImageBackground,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MovieDetails from "@/components/movie_details";
 import Tab from "@/components/tab";
+import useFetch from "@/hooks/api_managements";
+import { DEFAULT_GET_OPTIONS, getImage } from "@/constants/API";
+
+const tabNames = ["About Movie", "Reviews", "Cast"];
 
 export default function Show() {
+    const [currentTab, setCurrentTab] = useState(tabNames[0]);
     const { id } = useLocalSearchParams();
+    const [hide, setHide] = useState(false);
+
+    const { data, isFetching } = useFetch(
+        `movie/${id}`,
+        ["movies", id.toString()],
+        DEFAULT_GET_OPTIONS
+    );
+
+
+    useEffect(() => {
+        if (!isFetching) {
+            setHide(true);
+        }
+    }, [isFetching]);
+
     return (
         <SafeAreaView
             style={[
@@ -22,30 +50,48 @@ export default function Show() {
                     source={require("@/assets/images/watchlisted.png")}
                 ></Image>
             </Header>
-            <ImageBackground
-                style={{
-                    width: "100%",
-                    height: 210,
-                }}
-                height={210}
-                source={require("@/assets/images/image4.png")}
-            ></ImageBackground>
 
-            <MovieDetails></MovieDetails>
 
-            <Tab
-                style={{
-                    alignSelf: "center",
-                    marginVertical: 30
-                }}
-                tabs={["About Movie", "Reviews", "Cast"]}
-            ></Tab>
+            {isFetching ? (
+                <ActivityIndicator />
+            ) : (
+                <>
+                    <ImageBackground
+                        style={{
+                            width: "100%",
+                            height: 210,
+                        }}
+                        height={210}
+                        source={{
+                            uri: getImage(data?.backdrop_path ?? data?.poster_path)
+                        }}
+                    ></ImageBackground>
 
-            <View style={styles.tab}>
-                <Text style={styles.description}>
-                From DC Comics comes the Suicide Squad, an antihero team of incarcerated supervillains who act as deniable assets for the United States government, undertaking high-risk black ops missions in exchange for commuted prison sentences.
-                </Text>
-            </View>
+                    <MovieDetails
+                        date={data?.release_date.split('-').at(0)}
+                        category={data?.genres}
+                        title={data?.title}
+                        long={`${data?.runtime} Minutes`}
+                        uri={getImage(data?.poster_path ?? data?.backdrop_path)}
+                        ></MovieDetails>
+
+                    <Tab
+                        currentTab={currentTab}
+                        changeCurrentTab={setCurrentTab}
+                        style={{
+                            alignSelf: "center",
+                            marginVertical: 30,
+                        }}
+                        tabs={tabNames}
+                    ></Tab>
+
+                    <View style={styles.tab}>
+                        <Text style={styles.description}>
+                            {data?.overview}
+                        </Text>
+                    </View>
+                </>
+            )}
         </SafeAreaView>
     );
 }
@@ -57,11 +103,11 @@ const styles = StyleSheet.create({
 
     tab: {
         flex: 1,
-        paddingHorizontal: 30
+        paddingHorizontal: 30,
     },
     description: {
-        textAlign: 'justify',
+        textAlign: "justify",
         fontSize: 12,
-        color: 'white'
-    }
+        color: "white",
+    },
 });

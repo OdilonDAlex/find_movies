@@ -3,17 +3,32 @@ import MovieTitle from "./movie_title";
 import MovieResume from "./move_resume";
 import Tab from "./tab";
 
-export default function MovieDetails() {
+type Props = {
+    title: string,
+    uri: string,
+    long?: string,
+    date?: string,
+    category?: {id: number, name: string, [key: string]: string | number}[]
+}
+
+export default function MovieDetails({title, uri, long, date, category, ...rest}: Props) {
+    
+    console.log(title, long, category, date)
+    
     return (
-        <View style={styles.container}>
-            <MovieTitle
+        <View {...rest} style={styles.container}>
+            <MovieTitle uri={uri}
                 style={{
                     marginBottom: 20,
                 }}
-                title="Spiderman no way home"
+                title={title}
             ></MovieTitle>
 
-            <MovieResume />
+            <MovieResume 
+                long={long}
+                date={date}
+                category={category}
+            />
         </View>
     );
 }

@@ -5,6 +5,7 @@ import {
     View,
     FlatList,
     Pressable,
+    ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NavBar from "@/components/navbar";
@@ -15,36 +16,67 @@ import SearchBar from "@/components/searchBar";
 import CustomText from "@/components/text";
 import { router, useLocalSearchParams } from "expo-router";
 import SearchView from "@/components/search_view";
+import useFetch from "@/hooks/api_managements";
+import {
+    DEFAULT_GET_OPTIONS,
+    GENRES,
+    getImage,
+} from "@/constants/API";
+import { useEffect, useState } from "react";
+import { setOptions } from "expo-splash-screen";
 
 type Movie = {
+    id: number,
     title: string;
     rate: number;
     category: string;
     date: string;
-    length: string;
+    long: string;
     poster: any;
 };
 
+type Genre = {
+    id: string | number,
+    name: string
+}
+
+
 export default function Search() {
     const { query } = useLocalSearchParams();
-    const movies: Movie[] = [
-        {
-            title: "Spiderman - No Way Home",
-            rate: 9.5,
-            category: "Action",
-            date: "2019",
-            length: "148 Minutes",
-            poster: require("@/assets/images/avengers.png"),
-        },
-        {
-            title: "Sonic",
-            rate: 8.5,
-            category: "Action",
-            date: "2021",
-            length: "139 Minutes",
-            poster: require("@/assets/images/sonic.png"),
-        },
-    ];
+    const [newQuery, setNewQuery] = useState(query)
+    const [hide, setHide] = useState(false);
+    const { data, isFetching } = useFetch(
+        `search/movie?query=${query}`,
+        ["search", query.toString()],
+        DEFAULT_GET_OPTIONS
+    );
+
+    const movies = data?.results?.map(
+        (movie: {
+            [key: string]:
+                | string
+                | { id: number | string; name: string; [key: string]: any };
+        }) => {
+            return {
+                id: movie.id,
+                title: movie.title,
+                rate: movie.vote_average,
+                category: movie.genre_ids,
+                date: movie.release_date,
+                original_language: movie.original_language,
+                poster: getImage(
+                    (movie.poster_path ?? movie.backdrop_path) as any
+                ),
+            };
+        }
+    );
+
+    useEffect(() => {
+        if (!isFetching) {
+            setHide(true);
+        }
+    });
+
     return (
         <SafeAreaView
             style={[styles.container, { backgroundColor: color.primaryBG }]}
@@ -61,7 +93,11 @@ export default function Search() {
                 placeholder={query?.toString() ? query?.toString() : ""}
             />
 
-            {query !== undefined && movies.length === 0 ? (
+            {hide === false ? (
+                <ActivityIndicator style={{
+                    marginTop: 20
+                }}/>
+            ) : query !== undefined && movies?.length === 0 ? (
                 <View style={styles.body}>
                     <Image
                         width={76}
@@ -93,21 +129,30 @@ export default function Search() {
                     renderItem={({ item }) => {
                         return (
                             <Pressable
-                                onPress={() => router.push({
-                                    pathname: '/movie/[id]',
-                                    params: {
-                                        id: item.title
-                                    }
-                                })}
-                                >
+                                onPress={() =>
+                                    router.push({
+                                        pathname: "/movie/[id]",
+                                        params: {
+                                            id: item.id,
+                                        },
+                                    })
+                                }
+                            >
                                 <SearchView {...item} />
                             </Pressable>
                         );
                     }}
-                    keyExtractor={(item) => `${item.title}${item.length}`}
+                    keyExtractor={(item) => `${item.id}`}
                     numColumns={1}
                 />
             )}
+
+                <View
+                    style={{
+                        height: 78,
+                        width: "100%",
+                    }}
+                ></View>
 
             <NavBar
                 style={{

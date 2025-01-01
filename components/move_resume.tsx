@@ -2,9 +2,19 @@ import { StyleSheet, View,  Text, Image } from "react-native";
 import CustomText from "./text";
 import { color } from "@/constants/Colors";
 
-export default function MovieResume(){
+type Props = {
+    date?: string,
+    long?: string,
+    category?: {id: number, name: string, [key: string]: string | number}[]
+}
+
+export default function MovieResume({date, long, category, ...rest}: Props){
+    const category_ = category?.slice(0, 2)?.map((cat) => {
+        return cat.name
+    }).join(', ')
+
     return (
-        <View style={styles.container}>
+        <View  {...rest} style={styles.container}>
             <View style={[styles.item, {
                 borderRightColor: color.borderBottom,
                 borderRightWidth: 1,
@@ -13,7 +23,7 @@ export default function MovieResume(){
                 <Image
                     source={require('@/assets/images/calendar.png')}
                 />
-                <CustomText variant="menu">2021</CustomText>
+                <CustomText variant="menu">{date ?? 'Inconnue'}</CustomText>
             </View>
             <View style={[styles.item, {
                 borderRightColor: color.borderBottom,
@@ -23,13 +33,13 @@ export default function MovieResume(){
                 <Image
                     source={require('@/assets/images/clock.png')}
                 />
-                <CustomText variant="menu">148 Minutes</CustomText>
+                <CustomText variant="menu">{long ?? 'Inconnue'}</CustomText>
             </View>
             <View style={styles.item}>
                 <Image
                     source={require('@/assets/images/ticket.png')}
                 />
-                <CustomText variant="menu">Action</CustomText>
+                <CustomText variant="menu">{category_ ?? 'Inconnue'}</CustomText>
             </View>
         </View>
     )

@@ -8,6 +8,8 @@ import {
     View,
     ScrollView,
     FlatList,
+    Touchable,
+    ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NavBar from "@/components/navbar";
@@ -21,55 +23,16 @@ import { useFonts } from "expo-font";
 import SplashScreen from "./splash";
 import Recent from "@/components/recent";
 import Tab from "@/components/tab";
+import useFetch from "@/hooks/api_managements";
+import { router } from "expo-router";
 
-const movies = [
-    {
-        name: "Avengers",
-        poster: require("@/assets/images/avengers.png"),
-    },
-    {
-        name: "Adventurewithdog",
-        poster: require("../assets/images/adventurewithdog.png"),
-    },
-    {
-        name: "cidadeperdira",
-        poster: require("../assets/images/cidadeperdira.png"),
-    },
-    {
-        name: "doctorstrange",
-        poster: require("../assets/images/doctorstrange.png"),
-    },
-    {
-        name: "dumbledore",
-        poster: require("../assets/images/sonic.png"),
-    },
-    {
-        name: "image1",
-        poster: require("../assets/images/dumbledore.png"),
-    },
-    {
-        name: "image2",
-        poster: require("../assets/images/image2.png"),
-    },
-    {
-        name: "image4",
-        poster: require("@/assets/images/avengers.png"),
-    },
-    {
-        name: "sonic",
-        poster: require("@/assets/images/sonic.png"),
-    },
-    {
-        name: "sonic",
-        poster: require("@/assets/images/image1.png"),
-    },
-    {
-        name: "sonic",
-        poster: require("@/assets/images/dumbledore.png"),
-    },
-];
+const API_KEY =
+    "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2NzM3YzM4MjMwZDI3NDNhODE1YzRjZTlkNGM3NGVjOSIsIm5iZiI6MTczNTQ1NDUxMC41NjksInN1YiI6IjY3NzBlZjJlMDVjNDZhYjNmYzkyN2Q1NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.4PcA0qIztiTibpzL6gIf9KdH0_udksETGRHOlIlDgSw";
+
+const tabsName = ["Upcoming", "Popular", "Top Rated", "Now Playing"];
 
 export default function Index() {
+    const [currentTab, setCurrentTab] = useState(tabsName[0]);
     const [hide, setHide] = useState(false) as [
         boolean,
         (hide: boolean) => void
@@ -78,9 +41,34 @@ export default function Index() {
         roboto: require("@/assets/fonts/Roboto-Medium.ttf"),
     });
 
+    const options = {
+        method: "GET",
+        headers: {
+            accept: "application/json",
+            Authorization: "Bearer " + API_KEY,
+        },
+    };
+    const { data, isFetching } = useFetch(
+        `movie/${currentTab.replace(" ", "_").toLowerCase()}`,
+        [currentTab],
+        options
+    );
+
+    const count = data?.results.length
+    const movies = data?.results.map((movie: {[key: string]: string | number | Object }) => {
+        return {
+            id: movie.id,
+            poster: movie.poster_path,
+            // backdrop: movie.backdrop_path,
+            // category: movie.genres,
+            // description: movie.overview,
+            // date: movie.realise_date,
+        };
+    }).splice(0, count - (count % 3))
+
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined;
-        if (loaded) {
+        if (loaded && !isFetching) {
             timer = setTimeout(() => {
                 setHide(true);
             }, 500);
@@ -89,7 +77,7 @@ export default function Index() {
         return () => {
             timer ? clearTimeout(timer) : null;
         };
-    }, [loaded]);
+    }, [loaded, isFetching]);
 
     type Movie = {
         image: string;
@@ -111,9 +99,7 @@ export default function Index() {
         <SafeAreaView
             style={[styles.container, { backgroundColor: color.primaryBG }]}
         >
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                >
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <CustomText
                     style={{ marginVertical: 20 }}
                     variant="home_text_header"
@@ -123,54 +109,64 @@ export default function Index() {
 
                 <SearchBar />
 
-                <Recent/>
+                <Recent />
 
                 <Tab
-                    tabs={["Upcoming", "Popular", "Recent", "Now Playing"]}
+                    currentTab={currentTab}
+                    changeCurrentTab={setCurrentTab}
+                    tabs={tabsName}
                 ></Tab>
 
-                <FlatList
-                    scrollEnabled={false}
-                    contentContainerStyle={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}
-                    data={movies}
-                    renderItem={({ item }) => {
-                        return (
-                            <Pressable
-                                style={{
-                                    width: 100,
-                                    height: 145,
-                                    margin: 10,
-                                }}
-                            >
-                                <Image
+                {isFetching ? (
+                    <ActivityIndicator />
+                ) : (
+                    <FlatList
+                        scrollEnabled={false}
+                        contentContainerStyle={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                        data={movies}
+                        renderItem={({ item }) => {
+                            return (
+                                <Pressable
+                                    onPress={() => router.push({
+                                        pathname:'/movie/[id]',
+                                        params: {id: item.id}
+                                    })}
                                     style={{
-                                        height: 145,
                                         width: 100,
-                                        borderRadius: 16
+                                        height: 145,
+                                        margin: 10,
                                     }}
-                                    width={100}
-                                    height={145}
-                                    resizeMode={"stretch"}
-                                    source={item.poster}
-                                />
-                            </Pressable>
-                        );
-                    }}
-                    keyExtractor={(item) => `${item.name}${item.poster}`}
-                    numColumns={3}
-                />
+                                >
+                                    <Image
+                                        style={{
+                                            height: 145,
+                                            width: 100,
+                                            borderRadius: 16,
+                                        }}
+                                        width={100}
+                                        height={145}
+                                        resizeMode={"stretch"}
+                                        source={{
+                                            uri: `https://image.tmdb.org/t/p/w500/${item.poster}`,
+                                        }}
+                                    />
+                                </Pressable>
+                            );
+                        }}
+                        keyExtractor={(item) => `${item.name}${item.poster}`}
+                        numColumns={3}
+                    />
+                )}
 
-                <View style={
-                    {
+                <View
+                    style={{
                         height: 78,
-                        width: '100%'
-                    }
-                }>
-
-                </View>
+                        width: "100%",
+                    }}
+                ></View>
             </ScrollView>
             <NavBar
                 style={{

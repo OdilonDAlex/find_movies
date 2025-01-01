@@ -6,9 +6,10 @@ import { Dimensions } from "react-native";
 
 type Props = ViewProps & {
     title: string;
+    uri: string
 };
 
-export default function MovieTitle({ title, style, ...rest }: Props) {
+export default function MovieTitle({ uri, title, style, ...rest }: Props) {
     const titleRef = useRef<View>();
     const [position, setPosition] = useState<null | {
         top: number;
@@ -47,9 +48,12 @@ export default function MovieTitle({ title, style, ...rest }: Props) {
                         styles.floating_image,
                         {
                             ...position,
+                            borderRadius: 12
                         },
                     ]}
-                    source={require("@/assets/images/avengers.png")}
+                    source={{
+                        uri: uri
+                    }}
                 />
             ) : undefined}
         </View>

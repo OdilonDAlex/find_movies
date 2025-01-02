@@ -6,6 +6,7 @@ import {
     ActivityIndicator,
     Image,
     ImageBackground,
+    Pressable,
     StyleSheet,
     Text,
     View,
@@ -13,29 +14,60 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import MovieDetails from "@/components/movie_details";
 import Tab from "@/components/tab";
-import useFetch from "@/hooks/api_managements";
-import { DEFAULT_GET_OPTIONS, getImage } from "@/constants/API";
+import { useFetch, usePost } from "@/hooks/api_managements";
+import {
+    DEFAULT_GET_OPTIONS,
+    DEFAULT_POST_OPTIONS,
+    getImage,
+} from "@/constants/API";
 import Actor from "@/components/actor";
+import Reviews from "@/components/reviews";
 
 const tabNames = ["About Movie", "Reviews", "Cast"];
 
 export default function Show() {
+    const [added, setAdded] = useState(false);
     const [currentTab, setCurrentTab] = useState(tabNames[0]);
-    const { id } = useLocalSearchParams();
+    const { id, account_id } = useLocalSearchParams();
     const [hide, setHide] = useState(false);
-
     const { data, isFetching } = useFetch(
         `movie/${id}`,
         ["movies", id.toString()],
         DEFAULT_GET_OPTIONS
     );
 
+    const icon = added
+        ? require("@/assets/images/watchlisted.png")
+        : require("@/assets/images/watchlist.png");
 
     useEffect(() => {
         if (!isFetching) {
             setHide(true);
         }
     }, [isFetching]);
+
+    const {
+        data: results,
+        mutate: addToWatchList,
+        isSuccess,
+    } = usePost(
+        `account/${account_id}/watchlist`,
+        {
+            body: JSON.stringify({
+                media_type: "movie",
+                media_id: data?.id,
+                watchlist: false,
+            }),
+        },
+        ["watchlist", "add", data?.id.toString()],
+        DEFAULT_POST_OPTIONS
+    );
+
+    useEffect(() => {
+        if (isSuccess) {
+            setAdded(true);
+        }
+    }, [isSuccess]);
 
     return (
         <SafeAreaView
@@ -47,11 +79,16 @@ export default function Show() {
             ]}
         >
             <Header title={"Details"} style={{ paddingHorizontal: 20 }}>
-                <Image
-                    source={require("@/assets/images/watchlisted.png")}
-                ></Image>
+                <Pressable
+                    onPress={() => {
+                        addToWatchList();
+                    }}
+                >
+                    <Image
+                        source={icon}
+                    ></Image>
+                </Pressable>
             </Header>
-
 
             {isFetching ? (
                 <ActivityIndicator />
@@ -64,17 +101,19 @@ export default function Show() {
                         }}
                         height={210}
                         source={{
-                            uri: getImage(data?.backdrop_path ?? data?.poster_path)
+                            uri: getImage(
+                                data?.backdrop_path ?? data?.poster_path
+                            ),
                         }}
                     ></ImageBackground>
 
                     <MovieDetails
-                        date={data?.release_date.split('-').at(0)}
+                        date={data?.release_date.split("-").at(0)}
                         category={data?.genres}
                         title={data?.title}
                         long={`${data?.runtime} Minutes`}
                         uri={getImage(data?.poster_path ?? data?.backdrop_path)}
-                        ></MovieDetails>
+                    ></MovieDetails>
 
                     <Tab
                         currentTab={currentTab}
@@ -87,13 +126,17 @@ export default function Show() {
                     ></Tab>
 
                     <View style={styles.tab}>
-                        {currentTab === 'About Movie' ? <Text style={styles.description}>
-                            {data?.overview}
-                        </Text> :  undefined}
-                        {currentTab === 'Reviews' ? <Text style={styles.description}>
-                            {data?.overview}
-                        </Text> :  undefined}
-                        {currentTab === 'Cast' ? <Actor movie_id={id.toString()}/> :  undefined}
+                        {currentTab === "About Movie" ? (
+                            <Text style={styles.description}>
+                                {data?.overview}
+                            </Text>
+                        ) : undefined}
+                        {currentTab === "Reviews" ? (
+                            <Reviews id={id.toString()} />
+                        ) : undefined}
+                        {currentTab === "Cast" ? (
+                            <Actor movie_id={id.toString()} />
+                        ) : undefined}
                     </View>
                 </>
             )}

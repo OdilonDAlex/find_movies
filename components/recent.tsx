@@ -13,10 +13,11 @@ import {
 } from "react-native";
 
 type Props = ViewProps & {
-    movies: any[];
+    movies: any[] | undefined;
+    account_id: string | number
 };
 
-export default function Recent({ children, movies, ...rest }: Props) {
+export default function Recent({ account_id, children, movies, ...rest }: Props) {
     return (
         <View style={styles.container}>
             {children}
@@ -25,14 +26,15 @@ export default function Recent({ children, movies, ...rest }: Props) {
                 horizontal={true}
             >
 
-                {movies.map((movie) => (
+                {movies?.map((movie) => (
                     <View key={movie.id}>
                         <Pressable
                             style={styles.pressable}
                             onPress={() => router.push({
                               pathname: '/movie/[id]',
                               params: {
-                                id: movie.id
+                                id: movie.id,
+                                account_id: account_id
                               }
                             })}
                         >

@@ -16,7 +16,7 @@ import SearchBar from "@/components/searchBar";
 import CustomText from "@/components/text";
 import { router, useLocalSearchParams } from "expo-router";
 import SearchView from "@/components/search_view";
-import useFetch from "@/hooks/api_managements";
+import {useFetch} from "@/hooks/api_managements";
 import {
     DEFAULT_GET_OPTIONS,
     GENRES,
@@ -77,6 +77,8 @@ export default function Search() {
         }
     });
 
+
+    const {data: data_, isFetching: isFetching_} = useFetch('account', ['account'], DEFAULT_GET_OPTIONS)
     return (
         <SafeAreaView
             style={[styles.container, { backgroundColor: color.primaryBG }]}
@@ -175,6 +177,9 @@ export default function Search() {
                     source={require("@/assets/images/watchlist.png")}
                     text="Watch List"
                     link={"/watch_list"}
+                    params={{
+                        id: data_?.id
+                    }}
                 />
             </NavBar>
         </SafeAreaView>

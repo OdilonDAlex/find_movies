@@ -9,7 +9,7 @@ import {
     ViewStyle,
 } from "react-native";
 import CustomText from "./text";
-import useFetch from "@/hooks/api_managements";
+import {useFetch} from "@/hooks/api_managements";
 import { DEFAULT_GET_OPTIONS, getImage } from "@/constants/API";
 import { useEffect, useState } from "react";
 
